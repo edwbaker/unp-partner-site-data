@@ -3,6 +3,17 @@ library(lubridate)
 library(ggTimeSeries)
 library(sonicscrewdriver)
 
+
+data_raw <- audioblast("standalone","soundscapestats", endpoint="day_counts", source="unp")
+full_data <- data_raw$days
+full_data <- full_data[!is.na(full_data$date),]
+full_data <- full_data[!is.na(full_data$deployment),]
+full_data <- full_data[year(full_data$date) > 2000,]
+full_data$date <- ymd(full_data$date)
+
+choices <- sort(unique(full_data$deployment))
+names(choices) <- choices
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -17,12 +28,7 @@ ui <- fluidPage(
               width = 6,
               selectInput("deployment",
                           "Deployment:",
-                          choices = list(
-                            "Glasgow-1" = "Glasgow-1",
-                            "Glasgow-2" = "Glasgow-2",
-                            "Newcastle-1" = "Newcastle-1",
-                            "Newcastle-2" = "Newcastle-2"
-                          ),
+                          choices = choices,
                           selected = "Glasgow-1")
             ),
             column(
@@ -30,7 +36,7 @@ ui <- fluidPage(
           
               sliderInput("year",
                           "Year:",
-                          min = 2020,
+                          min = min(year(full_data$date)),
                           max = year(today()),
                           value = year(today()),
                           timeFormat = "%Y",
@@ -53,15 +59,14 @@ server <- function(input, output) {
     output$timePlot <- renderPlot({
       year <- input$year
       deployment <- input$deployment
-      data_raw <- audioblast("standalone","soundscapestats", endpoint="day_counts", source="unp", deployment=deployment, year=year)
-      data <- data_raw$days
       
+      data <- full_data[full_data$deployment == deployment,]
+      data <- data[year(data$date) == year,]
+      data$present <- rep_len(1, nrow(data))
+      data$present<- as.numeric(data$present)
       
-      if (!is.null(data)) {
-        data <- data[!is.na(data$date),]
-        data$date <- ymd(data$date)
-        data$present <- rep_len(1, nrow(data))
-        data$present<- as.numeric(data$present)
+      if (!nrow(data) == 0) {
+        
         
         #Check if data$date contains first and last day of year
         #data <- data[order(data$date),]
