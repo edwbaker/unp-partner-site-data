@@ -24,7 +24,8 @@ ui <- fluidPage(
                         choices = list(
                           "Glasgow-1" = "Glasgow-1",
                           "Glasgow-2" = "Glasgow-2",
-                          "Newcastle-1" = "Newcastle-1"
+                          "Newcastle-1" = "Newcastle-1",
+                          "Newcastle-2" = "Newcastle-2"
                           ),
                         selected = "Glasgow-1")
         ),
