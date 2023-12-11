@@ -10,28 +10,38 @@ ui <- fluidPage(
     titlePanel("UNP Partner Site Data"),
 
     # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("year",
-                        "Year:",
-                        min = 2020,
-                        max = year(today()),
-                        value = year(today()),
-                        timeFormat = "%Y",
-                        sep = ""),
-            selectInput("deployment",
-                        "Deployment:",
-                        choices = list(
-                          "Glasgow-1" = "Glasgow-1",
-                          "Glasgow-2" = "Glasgow-2",
-                          "Newcastle-1" = "Newcastle-1",
-                          "Newcastle-2" = "Newcastle-2"
+    fluidRow(
+        column(
+          width=12,
+            column(
+              width = 6,
+              selectInput("deployment",
+                          "Deployment:",
+                          choices = list(
+                            "Glasgow-1" = "Glasgow-1",
+                            "Glasgow-2" = "Glasgow-2",
+                            "Newcastle-1" = "Newcastle-1",
+                            "Newcastle-2" = "Newcastle-2"
                           ),
-                        selected = "Glasgow-1")
+                          selected = "Glasgow-1")
+            ),
+            column(
+              width = 6,
+          
+              sliderInput("year",
+                          "Year:",
+                          min = 2020,
+                          max = year(today()),
+                          value = year(today()),
+                          timeFormat = "%Y",
+                          sep = "",
+                          ticks=FALSE),
+            )
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
+        column(
+            width = 12,
            plotOutput("timePlot")
         )
     )
