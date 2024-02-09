@@ -48,7 +48,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         column(
             width = 12,
-            p("If a graph is shown, green squares indicate days with recordigs."),
+            p("If a graph is shown, green squares indicate days with recordings."),
            plotOutput("timePlot")
         )
     )
